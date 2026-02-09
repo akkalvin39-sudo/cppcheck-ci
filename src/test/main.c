@@ -7,5 +7,5 @@ int main(void)
 {
  // cppcheck-suppress constVariable
     int arr[5]={0};
-    return arr[1];
+    return arr[2];
 }
