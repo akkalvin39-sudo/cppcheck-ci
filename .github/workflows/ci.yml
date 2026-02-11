@@ -1,9 +1,10 @@
 on: [push]
 jobs:
   build_and_static_analysis:
+    name: build-and-analysis
     runs-on: ubuntu-latest
     container:
-      image: artfulbytes/msp430-gcc-9.3.1.11:latest
+      image: alvin123msp430/msp430-gcc-9.3.1.11:latest
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
