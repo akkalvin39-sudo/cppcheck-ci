@@ -1,12 +1,20 @@
 on: [push]
+
 jobs:
   build_and_static_analysis:
     name: build-and-analysis
     runs-on: ubuntu-latest
     container:
       image: alvin123msp430/msp430-gcc-9.3.1.11:latest
+      options: --pull always -v ${{ github.workspace }}:/github/workspace -w /github/workspace
     steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v3
-      - run: TOOLS_PATH=/home/ubuntu/dev/tools make
+      - uses: actions/checkout@v3
+
+      - name: Debug location
+        run: |
+          pwd
+          ls -la
+
+      - run: make format && git diff --quiet
       - run: make cppcheck
+      - run: make

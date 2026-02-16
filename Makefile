@@ -1,8 +1,5 @@
 # Directories
-TOOLS_DIR = ${TOOLS_PATH}
-MSPGCC_ROOT_DIR = $(TOOLS_DIR)/msp430-gcc
-MSPGCC_BIN_DIR = $(MSPGCC_ROOT_DIR)/bin
-MSPGCC_INCLUDE_DIR = $(MSPGCC_ROOT_DIR)/include
+
 BUILD_DIR = build
 OBJ_DIR = $(BUILD_DIR)/obj
 BIN_DIR = $(BUILD_DIR)/bin
@@ -10,17 +7,19 @@ TI_CCS_DIR = $(TOOLS_DIR)/ccs1110/ccs
 DEBUG_BIN_DIR = $(TI_CCS_DIR)/ccs_base/DebugServer/bin
 DEBUG_DRIVERS_DIR = $(TI_CCS_DIR)/ccs_base/DebugServer/drivers
 
-LIB_DIRS = $(MSPGCC_INCLUDE_DIR)
-INCLUDE_DIRS = $(MSPGCC_INCLUDE_DIR) \
-			   ./src \
+
+INCLUDE_DIRS = ./src \
 			   ./external/ \
 			   ./external/printf
 
 # Toolchain
-CC = $(MSPGCC_BIN_DIR)/msp430-elf-gcc
+CC = msp430-elf-gcc
+
 RM = rm
 DEBUG = LD_LIBRARY_PATH=$(DEBUG_DRIVERS_DIR) $(DEBUG_BIN_DIR)/mspdebug
 CPPCHECK = cppcheck
+FORMAT = clang-format
+
 
 # Files
 TARGET = $(BIN_DIR)/nsumo
@@ -36,7 +35,9 @@ APP_SRC = $(addprefix src/app/,\
 TEST_SRC = $(addprefix src/test/,\
 		     main.c \
 			 )
-SOURCES = $(DRIVERS_SRC) \
+
+SOURCES = src/main.c \
+		  $(DRIVERS_SRC) \
 		  $(APP_SRC) \
 		  $(TEST_SRC)
 
@@ -62,7 +63,7 @@ $(OBJ_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 # Phonies
-.PHONY: all clean flash cppcheck
+.PHONY: all clean flash cppcheck format
 
 all: $(TARGET)
 
@@ -75,6 +76,9 @@ flash: $(TARGET)
 cppcheck:
 	@$(CPPCHECK) --quiet --enable=all --error-exitcode=1 \
 	--inline-suppr \
-	-I ./src -I ./external -I ./external/printf \
+	-I $(INCLUDE_DIRS) \
 	$(SOURCES) \
 	-i external/printf
+
+format:
+	@$(FORMAT) -i $(SOURCES)
