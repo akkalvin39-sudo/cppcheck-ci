@@ -22,6 +22,8 @@ RM = rm
 DEBUG = LD_LIBRARY_PATH=$(DEBUG_DRIVERS_DIR) $(DEBUG_BIN_DIR)/mspdebug
 CPPCHECK = cppcheck
 FORMAT = clang-format
+
+
 # Files
 TARGET = $(BIN_DIR)/nsumo
 
@@ -36,7 +38,9 @@ APP_SRC = $(addprefix src/app/,\
 TEST_SRC = $(addprefix src/test/,\
 		     main.c \
 			 )
-SOURCES = $(DRIVERS_SRC) \
+
+SOURCES = src/main.c \
+		  $(DRIVERS_SRC) \
 		  $(APP_SRC) \
 		  $(TEST_SRC)
 
@@ -75,9 +79,9 @@ flash: $(TARGET)
 cppcheck:
 	@$(CPPCHECK) --quiet --enable=all --error-exitcode=1 \
 	--inline-suppr \
-	-I ./src -I ./external -I ./external/printf \
+	-I $(INCLUDE_DIRS) \
 	$(SOURCES) \
 	-i external/printf
 
 format:
-	@clang-format -i $(SOURCES)
+	@$(FORMAT) -i $(SOURCES)
