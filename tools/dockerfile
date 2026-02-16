@@ -1,6 +1,5 @@
 FROM ubuntu:22.04
 
-# Install necessary packages
 RUN DEBIAN_FRONTEND=noninteractive \
     apt-get update && \
     apt-get install -y \
@@ -13,7 +12,16 @@ RUN DEBIAN_FRONTEND=noninteractive \
         git && \
     rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
+# Create tools directory
+RUN mkdir -p /home/ubuntu/dev/tools
+
+# Download MSP430 GCC
+RUN cd /home/ubuntu/dev/tools && \
+    wget https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-Lzkk9rRkgi/9.3.1.11/msp430-gcc-9.3.1.11_linux64.tar.bz2 && \
+    tar -xjf msp430-gcc-9.3.1.11_linux64.tar.bz2 && \
+    mv msp430-gcc-9.3.1.11 msp430-gcc
+
+# Create user
 RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1001 ubuntu
 
 USER ubuntu
