@@ -1,1 +1,4 @@
 .github/workflows/*.code-workspace
+build/
+compile_commands.json
+.clangd/
