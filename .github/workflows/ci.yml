@@ -1,12 +1,31 @@
 on: [push]
+
 jobs:
   build_and_static_analysis:
     runs-on: ubuntu-latest
-    container:
-      image: alvin123msp430/msp430-gcc-9.3.1.11:latest
+
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
-      - run: make format && git diff --quiet
-      - run: make cppcheck
-      - run: TOOLS_PATH=/home/ubuntu/dev/tools make
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget bzip2 make unzip cppcheck clang-format
+
+      - name: Install MSP430 toolchain
+        run: |
+          mkdir -p ~/dev/tools
+          cd ~/dev/tools
+          wget https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-Lzkk9rRkgi/9.3.1.11/msp430-gcc-9.3.1.11_linux64.tar.bz2
+          tar -xjf msp430-gcc-9.3.1.11_linux64.tar.bz2
+          mv msp430-gcc-9.3.1.11 msp430-gcc
+
+      - name: Format check
+        run: make format && git diff --quiet
+
+      - name: Static analysis
+        run: make cppcheck
+
+      - name: Build
+        run: TOOLS_PATH=/home/runner/dev/tools make
