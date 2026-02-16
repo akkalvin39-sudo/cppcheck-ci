@@ -7,6 +7,9 @@ jobs:
     container:
       image: alvin123msp430/msp430-gcc-9.3.1.11:latest
       options: --pull always
+    defaults:
+      run:
+        working-directory: /github/workspace
     steps:
       - uses: actions/checkout@v3
       - run: make format && git diff --quiet
