@@ -1,7 +1,6 @@
 on: [push]
 jobs:
   build_and_static_analysis:
-    name: build-and-analysis
     runs-on: ubuntu-latest
     container:
       image: alvin123msp430/msp430-gcc-9.3.1.11:latest
@@ -11,4 +10,3 @@ jobs:
       - run: make format && git diff --quiet
       - run: make cppcheck
       - run: TOOLS_PATH=/home/ubuntu/dev/tools make
-      
